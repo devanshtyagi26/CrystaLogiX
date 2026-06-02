@@ -17,24 +17,24 @@ const connections = [
 
 export function SiteFooter() {
   return (
-    <footer className="relative z-10 border-t border-white/10 bg-[#071012]/94">
+    <footer className="relative z-10 border-t border-white/10 bg-[#081317]/96">
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.9fr] lg:px-10">
         <div className="max-w-md">
           <p className="text-sm font-semibold tracking-[0.24em] text-[#fffaf0]">
             CrystaLogiX
           </p>
           <p className="mt-4 text-sm leading-7 text-[#b9c7c3]">
-            GPU-accelerated materials informatics for two-stage bandgap prediction,
-            screening, and uncertainty-aware decision support.
+            A focused research interface for materials discovery, bandgap screening,
+            and uncertainty-aware decisions.
           </p>
           <p className="mt-6 text-xs uppercase tracking-[0.22em] text-[#7de2d6]">
-            Made by Devansh Tyagi
+            Crafted by Devansh Tyagi
           </p>
         </div>
 
         <div>
           <p className="text-xs uppercase tracking-[0.22em] text-[#fbbc4f]">
-            Navigation
+            Quick Navigation
           </p>
           <div className="mt-4 flex flex-col gap-3">
             {routes.map((route) => (
@@ -51,7 +51,7 @@ export function SiteFooter() {
 
         <div>
           <p className="text-xs uppercase tracking-[0.22em] text-[#fbbc4f]">
-            Connection Links
+            Connect
           </p>
           <div className="mt-4 flex flex-col gap-3">
             {connections.map((connection) => (
@@ -72,7 +72,7 @@ export function SiteFooter() {
       <div className="border-t border-white/10 px-5 py-4 sm:px-8 lg:px-10">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 text-xs text-[#8fa5a0] sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} CrystaLogiX. All rights reserved.</p>
-          <p>Built for materials science screening, interpretation, and research workflows.</p>
+          <p>Designed for materials science screening, interpretation, and research workflows.</p>
         </div>
       </div>
     </footer>
