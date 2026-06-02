@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #071012;
+  --foreground: #f7f3e8;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #fbbc4f;
+  color: #071012;
+}
+
+@keyframes slow-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes core-breathe {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.88;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes node-breathe {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.72;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes blob-think {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.96) rotate(-2deg);
+    border-radius: 48% 52% 46% 54% / 42% 45% 55% 58%;
+  }
+
+  35% {
+    transform: translate(-50%, -50%) scale(1.04) rotate(4deg);
+    border-radius: 58% 42% 52% 48% / 48% 58% 42% 52%;
+  }
+
+  68% {
+    transform: translate(-50%, -50%) scale(0.99) rotate(-5deg);
+    border-radius: 44% 56% 60% 40% / 54% 44% 56% 46%;
+  }
+}
+
+@keyframes iridescent-orbit {
+  from {
+    transform: rotate(0deg) scaleX(1.18);
+  }
+
+  to {
+    transform: rotate(360deg) scaleX(1.18);
+  }
+}
+
+@keyframes thought-pop {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.82);
+    opacity: 0.42;
+  }
+
+  48% {
+    transform: translateY(-10px) scale(1.12);
+    opacity: 1;
+  }
 }
