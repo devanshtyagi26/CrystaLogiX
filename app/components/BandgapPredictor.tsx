@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, type ReactElement } from "react";
+import { PageHeader } from "./Section";
 
 type Material = {
   id: string;
@@ -692,10 +693,7 @@ export default function BandgapPredictor(): ReactElement {
     <div
       style={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(135deg, #020c1b 0%, #0a1628 40%, #0d1f3c 100%)",
         fontFamily: "'DM Sans', sans-serif",
-        color: "#e2e8f0",
         padding: "0",
       }}
     >
@@ -731,48 +729,8 @@ export default function BandgapPredictor(): ReactElement {
       />
 
       {/* Header */}
-      <header
-        style={{
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          padding: "0 40px",
-          height: 64,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backdropFilter: "blur(12px)",
-          background: "rgba(2,12,27,0.6)",
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <AtomIcon />
-          <div>
-            <div
-              style={{
-                fontSize: 15,
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 800,
-                letterSpacing: "-0.01em",
-                color: "#f1f5f9",
-              }}
-            >
-              BandgapML
-            </div>
-            <div
-              style={{
-                fontSize: 10,
-                color: "#475569",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                marginTop: -2,
-              }}
-            >
-              Materials Intelligence
-            </div>
-          </div>
-        </div>
+      <div className="flex items-center justify-between absolute right-10 top-25">
+        <span></span>
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <GlowDot active={true} />
@@ -800,54 +758,13 @@ export default function BandgapPredictor(): ReactElement {
             Test Set · {MATERIALS.length} materials
           </div>
         </div>
-      </header>
-
+      </div>
+      <PageHeader
+        eyebrow="Interactive simulator | Two-stage ML pipeline · XGBoost"
+        title="Bandgap Prediction"
+        body="Select a material from the test set to run inference through the Two-stage Hurdle Pipeline and compare against DFT ground truth."
+      />
       <main style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px" }}>
-        {/* Hero */}
-        <div style={{ marginBottom: 48, textAlign: "center" }}>
-          <div
-            style={{
-              display: "inline-block",
-              fontSize: 10,
-              color: "#06d6a0",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              borderBottom: "1px solid rgba(6,214,160,0.3)",
-              paddingBottom: 6,
-              marginBottom: 20,
-            }}
-          >
-            Two-stage ML pipeline · XGBoost + Gradient Boosting
-          </div>
-          <h1
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(28px, 5vw, 48px)",
-              letterSpacing: "-0.03em",
-              lineHeight: 1.1,
-              background: "linear-gradient(135deg, #f1f5f9 30%, #94a3b8)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              margin: "0 0 12px",
-            }}
-          >
-            Bandgap Prediction
-          </h1>
-          <p
-            style={{
-              fontSize: 15,
-              color: "#475569",
-              maxWidth: 460,
-              margin: "0 auto",
-              lineHeight: 1.6,
-            }}
-          >
-            Select a material from the test set to run inference through the
-            two-stage ONNX pipeline and compare against DFT ground truth.
-          </p>
-        </div>
-
         <div
           style={{
             display: "grid",

@@ -20,15 +20,7 @@ const notes = [
 export default function SimulatorPage() {
   return (
     <main>
-      <PageHeader
-        eyebrow="Interactive simulator"
-        title="Move the gate and watch candidate routing change."
-        body="This is a lightweight, client-side demonstration of the hurdle decision flow. It uses representative materials and dissertation-derived thresholds, coverage levels, and screening logic rather than running the original notebook model in-browser."
-      />
-
-      <Section className="border-b border-line/10">
-        <ScreeningSimulator />
-      </Section>
+      <BandgapPredictor />
 
       <Section>
         <div className="grid gap-4 md:grid-cols-3">
@@ -40,7 +32,6 @@ export default function SimulatorPage() {
           ))}
         </div>
       </Section>
-      <BandgapPredictor />
     </main>
   );
 }
