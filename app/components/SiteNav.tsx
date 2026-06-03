@@ -1,5 +1,6 @@
 import { ModeToggle } from "@/components/ToggleMode";
 import Link from "next/link";
+import Logo from "./Logo";
 
 const links = [
   { href: "/", label: "Overview" },
@@ -16,7 +17,7 @@ export function SiteNav() {
           href="/"
           className="text-sm font-semibold tracking-[0.22em] text-warm"
         >
-          CrystaLogiX
+          <Logo />
         </Link>
         <div className="flex items-center gap-1 rounded-md border border-line/10 bg-panel/[0.035] p-1">
           {links.map((link) => (

@@ -1,5 +1,6 @@
 import { PageHeader, Panel, Section } from "../components/Section";
 import { ScreeningSimulator } from "../components/ScreeningSimulator";
+import BandgapPredictor from "../components/BandgapPredictor";
 
 const notes = [
   {
@@ -39,6 +40,7 @@ export default function SimulatorPage() {
           ))}
         </div>
       </Section>
+      <BandgapPredictor />
     </main>
   );
 }
