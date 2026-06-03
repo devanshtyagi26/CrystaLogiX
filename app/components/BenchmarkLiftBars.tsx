@@ -3,9 +3,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { benchmarkLift } from "../data/research";
 
+type HoverCard = {
+  model: string;
+  note: string;
+  improvement: number;
+  x: number;
+  y: number;
+};
+
 function BenchmarkLiftBars() {
   const chartRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [hoverCard, setHoverCard] = useState<HoverCard | null>(null);
 
   const maxMae = useMemo(
     () => Math.max(...benchmarkLift.map((item) => item.mae)),
@@ -49,9 +58,34 @@ function BenchmarkLiftBars() {
         {benchmarkLift.map((item, index) => {
           const width = isVisible ? `${(item.mae / maxMae) * 100}%` : "0%";
           const isCurrentModel = item.model === "CrystaLogiX";
+          const isHovered = hoverCard?.model === item.model;
 
           return (
-            <div key={item.model} className="grid gap-3 rounded-md p-1.5">
+            <div
+              key={item.model}
+              className="relative grid gap-3 rounded-md p-1.5"
+              onMouseEnter={(event) => {
+                setHoverCard({
+                  model: item.model,
+                  note: item.note,
+                  improvement: item.improvement,
+                  x: event.clientX,
+                  y: event.clientY,
+                });
+              }}
+              onMouseMove={(event) => {
+                setHoverCard((current) =>
+                  current
+                    ? {
+                        ...current,
+                        x: event.clientX,
+                        y: event.clientY,
+                      }
+                    : current,
+                );
+              }}
+              onMouseLeave={() => setHoverCard(null)}
+            >
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-sm font-semibold text-[#fffaf0]">
@@ -63,7 +97,17 @@ function BenchmarkLiftBars() {
                 </p>
               </div>
 
-              <div className="h-3 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-3 overflow-hidden rounded-full bg-white/10"
+                style={{
+                  transform: isHovered ? "scale(1.01)" : "scale(1)",
+                  boxShadow: isHovered
+                    ? isCurrentModel
+                      ? "2px 3px 16px rgb(0 97 169 / 60%)"
+                      : "2px 3px 16px rgb(169 83 0 / 60%)"
+                    : "none",
+                }}
+              >
                 <div
                   className="h-full rounded-full transition-[width] duration-1000 ease-out"
                   style={{
@@ -75,6 +119,23 @@ function BenchmarkLiftBars() {
                   }}
                 />
               </div>
+
+              {hoverCard?.model === item.model ? (
+                <div
+                  className="pointer-events-none fixed z-50 max-w-xs -translate-x-1/2 -translate-y-full rounded-lg border border-white/10 bg-[#071012] px-3 py-2 text-xs leading-5 text-[#dce7e4] shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
+                  style={{ left: hoverCard.x, top: hoverCard.y - 12 }}
+                >
+                  <p className="text-[0.7rem] uppercase tracking-[0.18em] text-[#7de2d6]">
+                    {hoverCard.model}
+                  </p>
+                  <p className="mt-1 text-[#fffaf0]">{hoverCard.note}</p>
+                  {hoverCard.improvement > 0 ? (
+                    <p className="mt-2 font-mono text-[0.7rem] text-[#fbbc4f]">
+                      MAE reduction: {hoverCard.improvement}%
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           );
         })}

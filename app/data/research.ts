@@ -77,31 +77,31 @@ export const benchmarkLift = [
     model: "DFT-PBE",
     improvement: 76.64,
     mae: 1.0000,
-    note: "Raw calculated values.",
+    note: "Raw calculated values having averaege MAE of 1.0000eV across the test set.",
   },
   {
     model: "CGCNN",
     improvement: 39.8,
     mae: 0.3880,
-    note: "Back-calculated from the reported 39.8% improvement.",
+    note: "Values calculated using the CGCNN model have an average MAE of 0.3880eV.",
   },
   {
     model: "MEGNet",
     improvement: 29.2,
     mae: 0.3299,
-    note: "Back-calculated from the reported 29.2% improvement.",
+    note: "Values calculated using the MEGNet model have an average MAE of 0.3299eV.",
   },
   {
     model: "GATGNN",
     improvement: 27.5,
     mae: 0.3222,
-    note: "Back-calculated from the reported 27.5% improvement.",
+    note: "Values calculated using the GATGNN model have an average MAE of 0.3222eV.",
   },
   {
     model: "CrystaLogiX",
-    improvement: 100,
+    improvement: 0,
     mae: 0.2336,
-    note: "End-to-end MAE across all material classes.",
+    note: "End-to-end MAE across all material classes using the CrystaLogiX pipeline have MAE of 0.2336eV.",
   },
 ];
 
