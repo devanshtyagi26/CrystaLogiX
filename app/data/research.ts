@@ -73,9 +73,36 @@ export const conformalResults = [
 ];
 
 export const benchmarkLift = [
-  { model: "CGCNN", gain: "39.8%" },
-  { model: "MEGNet", gain: "29.2%" },
-  { model: "GATGNN", gain: "27.5%" },
+  {
+    model: "DFT-PBE",
+    improvement: 76.64,
+    mae: 1.0000,
+    note: "Raw calculated values.",
+  },
+  {
+    model: "CGCNN",
+    improvement: 39.8,
+    mae: 0.3880,
+    note: "Back-calculated from the reported 39.8% improvement.",
+  },
+  {
+    model: "MEGNet",
+    improvement: 29.2,
+    mae: 0.3299,
+    note: "Back-calculated from the reported 29.2% improvement.",
+  },
+  {
+    model: "GATGNN",
+    improvement: 27.5,
+    mae: 0.3222,
+    note: "Back-calculated from the reported 27.5% improvement.",
+  },
+  {
+    model: "CrystaLogiX",
+    improvement: 100,
+    mae: 0.2336,
+    note: "End-to-end MAE across all material classes.",
+  },
 ];
 
 export const errorInsights = [

@@ -1,6 +1,6 @@
+import BenchmarkLiftBars from "../components/BenchmarkLiftBars";
 import { MetricTile, PageHeader, Panel, Section } from "../components/Section";
 import {
-  benchmarkLift,
   conformalResults,
   errorInsights,
   limitations,
@@ -52,29 +52,14 @@ export default function ResultsPage() {
             </div>
           </Panel>
 
-          <Panel className="p-6">
-            <p className="text-xs uppercase tracking-[0.24em] text-[#fbbc4f]">
-              BENCHMARK LIFT (MAE REDUCTION)
-            </p>
-            <div className="mt-6 space-y-6">
-              {benchmarkLift.map((item) => (
-                <div key={item.model}>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#dce7e4]">{item.model}</span>
-                    <span className="font-semibold text-[#fffaf0]">
-                      {item.gain}
-                    </span>
-                  </div>
-                  <div className="mt-2 h-2 rounded-full bg-white/10">
-                    <div
-                      className="h-2 rounded-full bg-[#fb5d52]"
-                      style={{ width: item.gain }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Panel>
+          <div id="benchmark-lift-section">
+            <Panel className="p-6">
+              <p className="text-xs uppercase tracking-[0.24em] text-[#fbbc4f]">
+                BENCHMARKING VS GRAPH NEURAL NETWORKS BASELINES
+              </p>
+              <BenchmarkLiftBars />
+            </Panel>
+          </div>
         </div>
       </Section>
 
