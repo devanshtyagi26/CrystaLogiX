@@ -64,14 +64,14 @@ export default function FrameworkPage() {
       </Section>
 
       <Section className="border-b border-white/10">
-      <div className="mb-10 max-w-3xl">
-            <p className="text-xs uppercase tracking-[0.24em] text-[#fbbc4f]">
-              Pipeline Architecture
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold leading-tight text-[#fffaf0] sm:text-4xl">
-             Two-stage hybrid pipeline overview.
-            </h2>
-        
+        <div className="mb-10 max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.24em] text-[#fbbc4f]">
+            Pipeline Architecture
+          </p>
+          <h2 className="mt-4 text-3xl font-semibold leading-tight text-[#fffaf0] sm:text-4xl">
+            Two-stage hybrid pipeline overview.
+          </h2>
+
           <p className="mt-4 text-sm leading-7 text-[#b9c7c3]">
             The diagram illustrates data ingestion from Materials Project
             records, GPU-resident featurization, a stage-one classifier that
@@ -86,6 +86,10 @@ export default function FrameworkPage() {
               src="/pipeline.png"
               alt="Pipeline architecture diagram"
               className="h-full w-full object-cover"
+              style={{
+                filter:
+                  "invert(1)",
+              }}
             />
           </div>
         </Panel>

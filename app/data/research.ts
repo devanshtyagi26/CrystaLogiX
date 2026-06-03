@@ -58,12 +58,12 @@ export const pipelineStages = [
 ];
 
 export const resultMetrics = [
-  { label: "Stage 1 ROC-AUC", value: "0.9843", detail: "phase gate discrimination" },
-  { label: "Nonmetal recall", value: "97.86%", detail: "at threshold 0.28" },
-  { label: "Stage 2 MAE", value: "0.3758 eV", detail: "bin-corrected nonmetals" },
-  { label: createElement(Fragment, null, "Stage 2 ", rSquaredSymbol), value: "0.8734", detail: "positive-gap subset" },
-  { label: "Global MAE", value: "0.2336 eV", detail: "all material classes" },
-  { label: createElement(Fragment, null, "Global ", rSquaredSymbol), value: "0.8945", detail: "end-to-end pipeline" },
+  { label: "Stage 1 ROC-AUC", value: "0.9843", detail: "PHASE GATE DISCRIMINATION" },
+  { label: "Nonmetal recall", value: "97.86%", detail: "OPTIMIZED FOR RECALL" },
+  { label: "Stage 2 MAE", value: "0.3758 eV", detail: "BIN-CORRECTED NONMETALS" },
+  { label: createElement(Fragment, null, "Stage 2 ", rSquaredSymbol), value: "0.8734", detail: "POSITIVE-GAP SUBSET" },
+  { label: "Global MAE", value: "0.2336 eV", detail: "ALL METAL CLASSES" },
+  { label: createElement(Fragment, null, "Global ", rSquaredSymbol), value: "0.8945", detail: "END-TO-END PIPELINE" },
 ];
 
 export const conformalResults = [
