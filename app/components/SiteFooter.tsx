@@ -17,23 +17,23 @@ const connections = [
 
 export function SiteFooter() {
   return (
-    <footer className="relative z-10 border-t border-white/10 bg-[#081317]/96">
+    <footer className="relative z-10 border-t border-line/10 bg-surface/96">
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.9fr] lg:px-10">
         <div className="max-w-md">
-          <p className="text-sm font-semibold tracking-[0.24em] text-[#fffaf0]">
+          <p className="text-sm font-semibold tracking-[0.24em] text-warm">
             CrystaLogiX
           </p>
-          <p className="mt-4 text-sm leading-7 text-[#b9c7c3]">
-            A focused research interface for materials discovery, bandgap screening,
-            and uncertainty-aware decisions.
+          <p className="mt-4 text-sm leading-7 text-muted">
+            A focused research interface for materials discovery, bandgap
+            screening, and uncertainty-aware decisions.
           </p>
-          <p className="mt-6 text-xs uppercase tracking-[0.22em] text-[#7de2d6]">
+          <p className="mt-6 text-xs uppercase tracking-[0.22em] text-teal">
             Crafted by Devansh Tyagi
           </p>
         </div>
 
         <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-[#fbbc4f]">
+          <p className="text-xs uppercase tracking-[0.22em] text-gold">
             Quick Navigation
           </p>
           <div className="mt-4 flex flex-col gap-3">
@@ -41,7 +41,7 @@ export function SiteFooter() {
               <Link
                 key={route.href}
                 href={route.href}
-                className="text-sm text-[#d5dfdc] transition hover:text-[#7de2d6]"
+                className="text-sm text-body transition hover:text-teal"
               >
                 {route.label}
               </Link>
@@ -50,7 +50,7 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-[#fbbc4f]">
+          <p className="text-xs uppercase tracking-[0.22em] text-gold">
             Connect
           </p>
           <div className="mt-4 flex flex-col gap-3">
@@ -58,9 +58,15 @@ export function SiteFooter() {
               <a
                 key={connection.label}
                 href={connection.href}
-                target={connection.href.startsWith("mailto:") ? undefined : "_blank"}
-                rel={connection.href.startsWith("mailto:") ? undefined : "noreferrer"}
-                className="text-sm text-[#d5dfdc] transition hover:text-[#7de2d6]"
+                target={
+                  connection.href.startsWith("mailto:") ? undefined : "_blank"
+                }
+                rel={
+                  connection.href.startsWith("mailto:")
+                    ? undefined
+                    : "noreferrer"
+                }
+                className="text-sm text-body transition hover:text-teal"
               >
                 {connection.label}
               </a>
@@ -69,10 +75,13 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 px-5 py-4 sm:px-8 lg:px-10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 text-xs text-[#8fa5a0] sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-t border-line/10 px-5 py-4 sm:px-8 lg:px-10">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 text-xs text-muted-soft sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} CrystaLogiX. All rights reserved.</p>
-          <p>Designed for materials science screening, interpretation, and research workflows.</p>
+          <p>
+            Designed for materials science screening, interpretation, and
+            research workflows.
+          </p>
         </div>
       </div>
     </footer>

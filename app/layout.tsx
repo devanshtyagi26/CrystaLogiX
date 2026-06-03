@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteNav } from "./components/SiteNav";
 import { SiteFooter } from "./components/SiteFooter";
 import "./globals.css";
+import { ThemeProvider } from "./components/theme-provider";
 
 export const metadata: Metadata = {
   title: "CrystaLogix | Bandgap Prediction Framework",
@@ -15,17 +16,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="relative min-h-full overflow-x-hidden bg-[#071012] text-[#f7f3e8]">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0 opacity-35 bg-[linear-gradient(rgba(125,226,214,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(125,226,214,0.08)_1px,transparent_1px)] bg-size-[72px_72px] mask-[radial-gradient(circle_at_center,black_18%,transparent_78%)]"
-        />
-        <div className="relative z-10">
-          <SiteNav />
-          {children}
-          <SiteFooter />
-        </div>
+    <html lang="en" className="h-full scroll-smooth antialiased" suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        className="relative min-h-full overflow-x-hidden bg-background text-foreground"
+      >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 z-0 opacity-45 [background-size:72px_72px] dark:opacity-35"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgb(var(--app-accent-cyan) / 0.11) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--app-accent-cyan) / 0.11) 1px, transparent 1px)",
+              WebkitMaskImage:
+                "radial-gradient(circle at center, rgb(var(--app-black)) 16%, transparent 76%)",
+              maskImage:
+                "radial-gradient(circle at center, rgb(var(--app-black)) 16%, transparent 76%)",
+            }}
+          />
+          <div className="relative z-10">
+            <SiteNav />
+            {children}
+            <SiteFooter />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

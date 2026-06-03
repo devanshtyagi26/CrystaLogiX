@@ -25,7 +25,7 @@ export default function SimulatorPage() {
         body="This is a lightweight, client-side demonstration of the hurdle decision flow. It uses representative materials and dissertation-derived thresholds, coverage levels, and screening logic rather than running the original notebook model in-browser."
       />
 
-      <Section className="border-b border-white/10">
+      <Section className="border-b border-line/10">
         <ScreeningSimulator />
       </Section>
 
@@ -33,8 +33,8 @@ export default function SimulatorPage() {
         <div className="grid gap-4 md:grid-cols-3">
           {notes.map((note) => (
             <Panel key={note.title} className="p-6">
-              <h2 className="text-lg font-semibold text-[#fffaf0]">{note.title}</h2>
-              <p className="mt-4 text-sm leading-7 text-[#b9c7c3]">{note.body}</p>
+              <h2 className="text-lg font-semibold text-warm">{note.title}</h2>
+              <p className="mt-4 text-sm leading-7 text-muted">{note.body}</p>
             </Panel>
           ))}
         </div>
