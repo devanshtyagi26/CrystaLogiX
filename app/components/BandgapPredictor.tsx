@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useRef, type ReactElement } from "react";
 import { PageHeader } from "./Section";
+import axios from "axios";
+import GlowDot from "./sim/GlowDot";
+import StatusFallbackCard from "./sim/StatusFallback";
 
 type Material = {
   id: string;
@@ -150,24 +153,6 @@ const CAT_CONFIG = {
     border: "rgba(245,158,11,0.4)",
   },
 };
-
-function GlowDot({ active }: { active: boolean }) {
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        width: 8,
-        height: 8,
-        borderRadius: "50%",
-        background: active ? "#06d6a0" : "#334155",
-        boxShadow: active
-          ? "0 0 8px #06d6a0, 0 0 16px rgba(6,214,160,0.4)"
-          : "none",
-        transition: "all 0.4s ease",
-      }}
-    />
-  );
-}
 
 function ProbBar({
   label,
@@ -449,7 +434,7 @@ function ResultCard({
       <div
         style={{
           background:
-            "linear-gradient(135deg, rgba(15,23,42,0.9), rgba(15,23,42,0.6))",
+            "linear-gradient(135deg, rgb(8 20 23), rgb(7 22 23 / 60%))",
           border: `1px solid ${cat.border}`,
           borderRadius: 12,
           padding: "20px 24px",
@@ -478,7 +463,7 @@ function ResultCard({
                 marginBottom: 10,
               }}
             >
-              <GlowDot active={!result.isMetal} />
+              <GlowDot active={result.isMetal ? -1 : 1} />
               <span
                 style={{
                   fontSize: 12,
@@ -573,7 +558,7 @@ function ResultCard({
       {/* Confidence */}
       <div
         style={{
-          background: "rgba(15,23,42,0.7)",
+          background: "rgba(7,21,21,0.7)",
           border: "1px solid rgba(255,255,255,0.06)",
           borderRadius: 12,
           padding: "16px 20px",
@@ -602,7 +587,7 @@ function ResultCard({
       {/* Feature info */}
       <div
         style={{
-          background: "rgba(15,23,42,0.5)",
+          background: "rgba(7,21,21,0.5)",
           border: "1px solid rgba(255,255,255,0.04)",
           borderRadius: 12,
           padding: "14px 20px",
@@ -669,6 +654,23 @@ export default function BandgapPredictor(): ReactElement {
   const [open, setOpen] = useState<boolean>(false);
   const dropRef = useRef<HTMLDivElement | null>(null);
 
+  const [active, setActive] = useState<number>(0);
+
+  const statusColor =
+    active === 1 ? "#06d6a0" : active === -1 ? "#ef4444" : "#f59e0b";
+
+  const res = axios
+    .get("api/health")
+    .then((response) => {
+      if (response.status === 200) {
+        setActive(1);
+      }
+    })
+    .catch((error) => {
+      console.error("Health check failed:", error);
+      setActive(-1);
+    });
+
   useEffect(() => {
     function handler(e: MouseEvent) {
       const target = e.target as Node | null;
@@ -733,15 +735,21 @@ export default function BandgapPredictor(): ReactElement {
         <span></span>
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <GlowDot active={true} />
+            <GlowDot active={active} />
             <span
               style={{
                 fontSize: 11,
-                color: "#475569",
+                // color: "#475569",
                 letterSpacing: "0.08em",
               }}
             >
-              ONNX Runtime
+              {active === 1 ? (
+                <span style={{ color: "#06d6a0" }}>ONNX Runtime</span>
+              ) : active === -1 ? (
+                <span style={{ color: "#ef4444" }}>ONNX ServerDown</span>
+              ) : (
+                <span style={{ color: "#f59e0b" }}>ONNX Connecting</span>
+              )}
             </span>
           </div>
           <div
@@ -764,432 +772,439 @@ export default function BandgapPredictor(): ReactElement {
         title="Bandgap Prediction"
         body="Select a material from the test set to run inference through the Two-stage Hurdle Pipeline and compare against DFT ground truth."
       />
-      <main style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 24,
-            alignItems: "start",
-          }}
-        >
-          {/* Left: Selector + stats */}
-          <div>
-            {/* Dropdown */}
-            <div style={{ marginBottom: 24 }}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: 11,
-                  color: "#475569",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  marginBottom: 10,
-                }}
-              >
-                Select material
-              </label>
-              <div ref={dropRef} style={{ position: "relative" }}>
-                <button
-                  onClick={() => setOpen((o) => !o)}
+
+      {active === 1 ? (
+        <main style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 24,
+              alignItems: "start",
+            }}
+          >
+            {/* Left: Selector + stats */}
+            <div>
+              {/* Dropdown */}
+              <div style={{ marginBottom: 24 }}>
+                <label
                   style={{
-                    width: "100%",
-                    textAlign: "left",
-                    background: "rgba(15,23,42,0.8)",
-                    border: `1px solid ${open ? "rgba(6,214,160,0.5)" : "rgba(255,255,255,0.1)"}`,
-                    borderRadius: 10,
-                    padding: "14px 18px",
-                    color: selected ? "#f1f5f9" : "#475569",
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    transition: "border-color 0.2s",
-                    fontFamily: "'DM Sans', sans-serif",
+                    display: "block",
+                    fontSize: 11,
+                    color: "#475569",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    marginBottom: 10,
                   }}
                 >
-                  <span>
-                    {selected ? (
-                      <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 10,
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontFamily: "'IBM Plex Mono', monospace",
-                            color: "#06d6a0",
-                            fontSize: 13,
-                          }}
-                        >
-                          {selected.id}
-                        </span>
-                        <span style={{ color: "#94a3b8" }}>
-                          {selected.name}
-                        </span>
-                      </span>
-                    ) : (
-                      "Choose a material…"
-                    )}
-                  </span>
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
+                  Select material
+                </label>
+                <div ref={dropRef} style={{ position: "relative" }}>
+                  <button
+                    onClick={() => setOpen((o) => !o)}
                     style={{
-                      transform: open ? "rotate(180deg)" : "none",
-                      transition: "transform 0.2s",
-                    }}
-                  >
-                    <path
-                      d="M3 5l4 4 4-4"
-                      stroke="#475569"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-
-                {open && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "calc(100% + 6px)",
-                      left: 0,
-                      right: 0,
-                      zIndex: 200,
-                      background: "#0d1f3c",
-                      border: "1px solid rgba(6,214,160,0.2)",
+                      width: "100%",
+                      textAlign: "left",
+                      background: "rgba(7,21,21,0.8)",
+                      border: `1px solid ${open ? "rgba(6,214,160,0.5)" : "rgba(255,255,255,0.1)"}`,
                       borderRadius: 10,
-                      overflow: "hidden",
-                      boxShadow:
-                        "0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(6,214,160,0.05)",
+                      padding: "14px 18px",
+                      color: selected ? "#f1f5f9" : "#475569",
+                      fontSize: 14,
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      transition: "border-color 0.2s",
+                      fontFamily: "'DM Sans', sans-serif",
                     }}
                   >
-                    <ScanLine />
-                    {MATERIALS.map((mat, i) => (
-                      <button
-                        key={mat.id}
-                        onClick={() => handleSelect(mat)}
-                        style={{
-                          width: "100%",
-                          textAlign: "left",
-                          background:
-                            selected?.id === mat.id
-                              ? "rgba(6,214,160,0.08)"
-                              : "transparent",
-                          border: "none",
-                          borderBottom:
-                            i < MATERIALS.length - 1
-                              ? "1px solid rgba(255,255,255,0.04)"
-                              : "none",
-                          padding: "12px 18px",
-                          cursor: "pointer",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          transition: "background 0.15s",
-                          fontFamily: "'DM Sans', sans-serif",
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.background =
-                            "rgba(6,214,160,0.06)")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.background =
-                            selected?.id === mat.id
-                              ? "rgba(6,214,160,0.08)"
-                              : "transparent")
-                        }
-                      >
+                    <span>
+                      {selected ? (
                         <span
                           style={{
                             display: "flex",
                             alignItems: "center",
-                            gap: 12,
+                            gap: 10,
                           }}
                         >
                           <span
                             style={{
-                              fontSize: 11,
                               fontFamily: "'IBM Plex Mono', monospace",
-                              color: "#475569",
-                              minWidth: 72,
+                              color: "#06d6a0",
+                              fontSize: 13,
                             }}
                           >
-                            {mat.id}
+                            {selected.id}
                           </span>
-                          <span style={{ fontSize: 14, color: "#e2e8f0" }}>
-                            {mat.name}
+                          <span style={{ color: "#94a3b8" }}>
+                            {selected.name}
                           </span>
                         </span>
-                        <span
+                      ) : (
+                        "Choose a material…"
+                      )}
+                    </span>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      style={{
+                        transform: open ? "rotate(180deg)" : "none",
+                        transition: "transform 0.2s",
+                      }}
+                    >
+                      <path
+                        d="M3 5l4 4 4-4"
+                        stroke="#475569"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  {open && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "calc(100% + 6px)",
+                        left: 0,
+                        right: 0,
+                        zIndex: 200,
+                        background: "#0d1f3c",
+                        border: "1px solid rgba(6,214,160,0.2)",
+                        borderRadius: 10,
+                        overflow: "hidden",
+                        boxShadow:
+                          "0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(6,214,160,0.05)",
+                      }}
+                    >
+                      <ScanLine />
+                      {MATERIALS.map((mat, i) => (
+                        <button
+                          key={mat.id}
+                          onClick={() => handleSelect(mat)}
                           style={{
-                            fontSize: 10,
-                            padding: "2px 8px",
-                            background: mat.isMetal
-                              ? "rgba(100,116,139,0.15)"
-                              : "rgba(6,214,160,0.1)",
-                            border: `1px solid ${mat.isMetal ? "rgba(100,116,139,0.3)" : "rgba(6,214,160,0.25)"}`,
-                            borderRadius: 10,
-                            color: mat.isMetal ? "#64748b" : "#06d6a0",
-                            letterSpacing: "0.06em",
+                            width: "100%",
+                            textAlign: "left",
+                            background:
+                              selected?.id === mat.id
+                                ? "rgba(6,214,160,0.08)"
+                                : "transparent",
+                            border: "none",
+                            borderBottom:
+                              i < MATERIALS.length - 1
+                                ? "1px solid rgba(255,255,255,0.04)"
+                                : "none",
+                            padding: "12px 18px",
+                            cursor: "pointer",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            transition: "background 0.15s",
+                            fontFamily: "'DM Sans', sans-serif",
                           }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.background =
+                              "rgba(6,214,160,0.06)")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.background =
+                              selected?.id === mat.id
+                                ? "rgba(6,214,160,0.08)"
+                                : "transparent")
+                          }
                         >
-                          {mat.isMetal ? "metal" : `${mat.actual} eV`}
-                        </span>
-                      </button>
-                    ))}
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 12,
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: 11,
+                                fontFamily: "'IBM Plex Mono', monospace",
+                                color: "#475569",
+                                minWidth: 72,
+                              }}
+                            >
+                              {mat.id}
+                            </span>
+                            <span style={{ fontSize: 14, color: "#e2e8f0" }}>
+                              {mat.name}
+                            </span>
+                          </span>
+                          <span
+                            style={{
+                              fontSize: 10,
+                              padding: "2px 8px",
+                              background: mat.isMetal
+                                ? "rgba(100,116,139,0.15)"
+                                : "rgba(6,214,160,0.1)",
+                              border: `1px solid ${mat.isMetal ? "rgba(100,116,139,0.3)" : "rgba(6,214,160,0.25)"}`,
+                              borderRadius: 10,
+                              color: mat.isMetal ? "#64748b" : "#06d6a0",
+                              letterSpacing: "0.06em",
+                            }}
+                          >
+                            {mat.isMetal ? "metal" : `${mat.actual} eV`}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Model pipeline card */}
+              <div
+                style={{
+                  background: "rgba(7,21,21,0.6)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 12,
+                  padding: "20px",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                <ScanLine />
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "#475569",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    marginBottom: 16,
+                  }}
+                >
+                  Pipeline
+                </div>
+                {[
+                  {
+                    step: "01",
+                    label: "Stage 1 — Classifier",
+                    sub: "XGBoost · metal vs non-metal",
+                    color: "#38bdf8",
+                  },
+                  {
+                    step: "02",
+                    label: "Stage 2 — Regressor",
+                    sub: "Gradient Boost · bandgap eV",
+                    color: "#06d6a0",
+                  },
+                ].map(({ step, label, sub, color }, i) => (
+                  <div
+                    key={step}
+                    style={{
+                      display: "flex",
+                      gap: 14,
+                      marginBottom: i === 0 ? 12 : 0,
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 8,
+                        flexShrink: 0,
+                        background: `${color}15`,
+                        border: `1px solid ${color}30`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 10,
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        color,
+                      }}
+                    >
+                      {step}
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          color: "#e2e8f0",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {label}
+                      </div>
+                      <div
+                        style={{ fontSize: 11, color: "#475569", marginTop: 2 }}
+                      >
+                        {sub}
+                      </div>
+                    </div>
                   </div>
-                )}
+                ))}
+                {/* connector */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: 35,
+                    top: 62,
+                    width: 1,
+                    height: 28,
+                    background: "rgba(255,255,255,0.08)",
+                  }}
+                />
+              </div>
+
+              {/* Dataset stats */}
+              <div
+                style={{
+                  marginTop: 16,
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
+                {[
+                  { label: "Test samples", value: "26,491" },
+                  { label: "Train samples", value: "95,366" },
+                  { label: "Features", value: "87" },
+                  { label: "Split", value: "72/8/20" },
+                ].map(({ label, value }) => (
+                  <div
+                    key={label}
+                    style={{
+                      background: "rgba(7,21,21,0.5)",
+                      border: "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 10,
+                      padding: "12px 16px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 18,
+                        fontWeight: 600,
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        color: "#94a3b8",
+                      }}
+                    >
+                      {value}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        color: "#334155",
+                        marginTop: 3,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {label}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Model pipeline card */}
-            <div
-              style={{
-                background: "rgba(15,23,42,0.6)",
-                border: "1px solid rgba(255,255,255,0.06)",
-                borderRadius: 12,
-                padding: "20px",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <ScanLine />
-              <div
-                style={{
-                  fontSize: 11,
-                  color: "#475569",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  marginBottom: 16,
-                }}
-              >
-                Pipeline
-              </div>
-              {[
-                {
-                  step: "01",
-                  label: "Stage 1 — Classifier",
-                  sub: "XGBoost · metal vs non-metal",
-                  color: "#38bdf8",
-                },
-                {
-                  step: "02",
-                  label: "Stage 2 — Regressor",
-                  sub: "Gradient Boost · bandgap eV",
-                  color: "#06d6a0",
-                },
-              ].map(({ step, label, sub, color }, i) => (
+            {/* Right: Result */}
+            <div>
+              {loading && (
                 <div
-                  key={step}
                   style={{
+                    background: "rgba(7,21,21,0.7)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderRadius: 12,
+                    padding: "48px 24px",
                     display: "flex",
-                    gap: 14,
-                    marginBottom: i === 0 ? 12 : 0,
-                    alignItems: "flex-start",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 20,
                   }}
                 >
-                  <div
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 8,
-                      flexShrink: 0,
-                      background: `${color}15`,
-                      border: `1px solid ${color}30`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 10,
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      color,
-                    }}
-                  >
-                    {step}
+                  <div style={{ position: "relative", width: 48, height: 48 }}>
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: "50%",
+                        border: `2px solid ${statusColor}15`,
+                      }}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: "50%",
+                        border: "2px solid transparent",
+                        borderTopColor: statusColor,
+                        animation: "spin 0.8s linear infinite",
+                      }}
+                    />
+                    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
                   </div>
                   <div>
                     <div
                       style={{
                         fontSize: 13,
-                        color: "#e2e8f0",
-                        fontWeight: 500,
+                        color: statusColor,
+                        textAlign: "center",
                       }}
                     >
-                      {label}
+                      Running ONNX inference…
                     </div>
                     <div
-                      style={{ fontSize: 11, color: "#475569", marginTop: 2 }}
+                      style={{
+                        fontSize: 11,
+                        color: "#334155",
+                        textAlign: "center",
+                        marginTop: 4,
+                      }}
                     >
-                      {sub}
+                      Two-stage pipeline
                     </div>
                   </div>
                 </div>
-              ))}
-              {/* connector */}
-              <div
-                style={{
-                  position: "absolute",
-                  left: 35,
-                  top: 62,
-                  width: 1,
-                  height: 28,
-                  background: "rgba(255,255,255,0.08)",
-                }}
-              />
-            </div>
+              )}
 
-            {/* Dataset stats */}
-            <div
-              style={{
-                marginTop: 16,
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 10,
-              }}
-            >
-              {[
-                { label: "Test samples", value: "26,491" },
-                { label: "Train samples", value: "95,366" },
-                { label: "Features", value: "87" },
-                { label: "Split", value: "72/8/20" },
-              ].map(({ label, value }) => (
+              {!loading && !result && (
                 <div
-                  key={label}
                   style={{
-                    background: "rgba(15,23,42,0.5)",
-                    border: "1px solid rgba(255,255,255,0.05)",
-                    borderRadius: 10,
-                    padding: "12px 16px",
+                    background: "rgba(7,21,21,0.4)",
+                    border: "1px dashed rgba(255,255,255,0.06)",
+                    borderRadius: 12,
+                    padding: "64px 24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 16,
                   }}
                 >
-                  <div
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 600,
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      color: "#94a3b8",
-                    }}
-                  >
-                    {value}
+                  <div style={{ width: 48, height: 48, opacity: 0.2 }}>
+                    <AtomIcon />
                   </div>
-                  <div
-                    style={{
-                      fontSize: 10,
-                      color: "#334155",
-                      marginTop: 3,
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right: Result */}
-          <div>
-            {loading && (
-              <div
-                style={{
-                  background: "rgba(15,23,42,0.7)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  borderRadius: 12,
-                  padding: "48px 24px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 20,
-                }}
-              >
-                <div style={{ position: "relative", width: 48, height: 48 }}>
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      borderRadius: "50%",
-                      border: "2px solid rgba(6,214,160,0.15)",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      borderRadius: "50%",
-                      border: "2px solid transparent",
-                      borderTopColor: "#06d6a0",
-                      animation: "spin 0.8s linear infinite",
-                    }}
-                  />
-                  <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                </div>
-                <div>
                   <div
                     style={{
                       fontSize: 13,
-                      color: "#94a3b8",
-                      textAlign: "center",
-                    }}
-                  >
-                    Running ONNX inference…
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11,
                       color: "#334155",
                       textAlign: "center",
-                      marginTop: 4,
                     }}
                   >
-                    Two-stage pipeline
+                    Select a material to run prediction
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {!loading && !result && (
-              <div
-                style={{
-                  background: "rgba(15,23,42,0.4)",
-                  border: "1px dashed rgba(255,255,255,0.06)",
-                  borderRadius: 12,
-                  padding: "64px 24px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 16,
-                }}
-              >
-                <div style={{ width: 48, height: 48, opacity: 0.2 }}>
-                  <AtomIcon />
-                </div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: "#334155",
-                    textAlign: "center",
-                  }}
-                >
-                  Select a material to run prediction
-                </div>
-              </div>
-            )}
-
-            {!loading && result && selected && (
-              <ResultCard result={result} material={selected} />
-            )}
+              {!loading && result && selected && (
+                <ResultCard result={result} material={selected} />
+              )}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      ) : active === -1 ? (
+        <StatusFallbackCard state="down" />
+      ) : (
+        <StatusFallbackCard state="connecting" />
+      )}
     </div>
   );
 }

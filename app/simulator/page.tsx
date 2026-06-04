@@ -1,6 +1,6 @@
 import { PageHeader, Panel, Section } from "../components/Section";
-import { ScreeningSimulator } from "../components/ScreeningSimulator";
 import BandgapPredictor from "../components/BandgapPredictor";
+
 
 const notes = [
   {
@@ -21,7 +21,6 @@ export default function SimulatorPage() {
   return (
     <main>
       <BandgapPredictor />
-
       <Section>
         <div className="grid gap-4 md:grid-cols-3">
           {notes.map((note) => (
