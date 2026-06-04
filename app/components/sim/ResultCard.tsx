@@ -1,7 +1,6 @@
 import EnergyLevelDiagram from "./EnergyLevelDiagram";
 import GlowDot from "./GlowDot";
 import ProbBar from "./ProbBar";
-import { BandgapCategory } from "@/lib/onnxInference";
 import { InferenceResult, Material } from "@/lib/types";
 
 const CAT_CONFIG = {

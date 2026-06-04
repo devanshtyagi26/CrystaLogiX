@@ -65,3 +65,12 @@ export type HoverCard = {
   x: number;
   y: number;
 };
+
+export type BandgapPrediction = {
+  isMetal: boolean;
+  classLabel: number;
+  probMetal: number;
+  probNonMetal: number;
+  bandgapEv: number | null;
+  bandgapCategory: BandgapCategory;
+};
