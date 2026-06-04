@@ -114,7 +114,7 @@ function StatusFallbackCard({
 }): ReactElement {
   const isConnecting = state === "connecting";
   const color = isConnecting ? "#f59e0b" : "#ef4444";
-  const title = isConnecting ? "ONNX Connecting" : "Server Down";
+  const title = isConnecting ? "Model Connecting" : "Server Down";
   const body = isConnecting
     ? "The runtime health probe is still pending."
     : "The inference server is unavailable right now.";

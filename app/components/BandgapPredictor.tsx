@@ -189,7 +189,7 @@ export default function BandgapPredictor(): ReactElement {
               serverState === "ready" ? "text-[#06d6a0]" : "text-[#f59e0b]"
             }
           >
-            {serverState === "ready" ? "ONNX Runtime" : "ONNX Connecting"}
+            {serverState === "ready" ? "Model Runtime" : "Model Connecting"}
           </span>
         </div>
         <div className="rounded-full border border-[#06d6a0]/20 bg-[#06d6a0]/8 px-3 py-1 text-xs tracking-[0.06em] text-[#06d6a0]">
@@ -204,7 +204,7 @@ export default function BandgapPredictor(): ReactElement {
       <PageHeader
         eyebrow="Interactive simulator | Two-stage ML pipeline | XGBoost"
         title="Bandgap Prediction"
-        body="Select a material from the test set. The dropdown reads target.json server-side, then the selected material id is matched against label.json and sent through the ONNX backend."
+        body="Select a material from the test set. The dropdown reads target.json server-side, then the selected material id is matched against label.json and sent through the Model backend."
       />
 
       {serverState === "connecting" ? (
@@ -358,7 +358,7 @@ export default function BandgapPredictor(): ReactElement {
                   <div className="h-12 w-12 animate-spin rounded-full border-2 border-[#06d6a0]/15 border-t-[#06d6a0]" />
                   <div className="text-center">
                     <div className="text-sm text-[#06d6a0]">
-                      Running ONNX inference...
+                      Running Model inference...
                     </div>
                     <div className="mt-1 text-xs text-[#475569]">
                       labels resolved from selected material id

@@ -2,23 +2,19 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI!;
 
-// Reuse connection across hot reloads in dev
 const globalWithMongo = global as typeof global & {
   _mongoClient?: MongoClient;
 };
 
-let client: MongoClient;
-
-if (process.env.NODE_ENV === "development") {
+function getClient(): MongoClient {
   if (!globalWithMongo._mongoClient) {
     globalWithMongo._mongoClient = new MongoClient(uri);
   }
-  client = globalWithMongo._mongoClient;
-} else {
-  client = new MongoClient(uri);
+  return globalWithMongo._mongoClient;
 }
 
 export async function getDb() {
-  await client.connect();
+  const client = getClient();
+  await client.connect(); // no-op if already connected
   return client.db("bandgap");
 }
