@@ -1,7 +1,6 @@
 import { Panel, Section } from "../components/Section";
 import BandgapPredictor from "../components/BandgapPredictor";
 
-
 const notes = [
   {
     title: "Threshold",

@@ -7,7 +7,7 @@ type SectionProps = {
 
 export function Section({ children, className = "" }: SectionProps) {
   return (
-    <section className={`px-5 py-16 sm:px-8 lg:px-10 ${className}`}>
+    <section className={`px-4 py-12 sm:px-8 sm:py-16 lg:px-10 ${className}`}>
       <div className="mx-auto w-full max-w-7xl">{children}</div>
     </section>
   );
@@ -21,12 +21,14 @@ type PageHeaderProps = {
 
 export function PageHeader({ eyebrow, title, body }: PageHeaderProps) {
   return (
-    <Section className="border-b border-line/10 pt-14">
-      <p className="text-xs uppercase tracking-[0.24em] text-teal">{eyebrow}</p>
-      <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight text-warm sm:text-6xl">
+    <Section className="border-b border-line/10 pt-10 sm:pt-14">
+      <p className="text-[11px] uppercase tracking-[0.2em] text-teal sm:text-xs sm:tracking-[0.24em]">
+        {eyebrow}
+      </p>
+      <h1 className="mt-4 max-w-4xl text-3xl font-semibold leading-tight text-warm sm:mt-5 sm:text-5xl lg:text-6xl">
         {title}
       </h1>
-      <p className="mt-6 max-w-3xl text-base leading-8 text-muted sm:text-lg">
+      <p className="mt-5 max-w-3xl text-sm leading-7 text-muted sm:mt-6 sm:text-lg sm:leading-8">
         {body}
       </p>
     </Section>
@@ -41,8 +43,8 @@ type MetricTileProps = {
 
 export function MetricTile({ value, label, detail }: MetricTileProps) {
   return (
-    <div className="rounded-lg border border-line/10 bg-panel/[0.035] p-5">
-      <p className="text-2xl font-semibold text-warm">{value}</p>
+    <div className="rounded-lg border border-line/10 bg-panel/[0.035] p-4 sm:p-5">
+      <p className="text-xl font-semibold text-warm sm:text-2xl">{value}</p>
       <p className="mt-2 text-sm text-muted-subtle">{label}</p>
       {detail ? (
         <p className="mt-3 text-xs tracking-[0.16em] text-gold">{detail}</p>

@@ -15,7 +15,7 @@ function LabelInfo({
         { label: "Labels", value: "server-side" },
       ].map(({ label, value }) => (
         <div key={label}>
-          <div className="mb-1 text-[10px] uppercase tracking-[0.1em] text-[#475569]">
+          <div className="mb-1 text-[10px] uppercase tracking-widest text-[#475569]">
             {label}
           </div>
           <div className="truncate font-mono text-xs text-[#94a3b8]">
