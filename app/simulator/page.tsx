@@ -1,4 +1,4 @@
-import { PageHeader, Panel, Section } from "../components/Section";
+import { Panel, Section } from "../components/Section";
 import BandgapPredictor from "../components/BandgapPredictor";
 
 

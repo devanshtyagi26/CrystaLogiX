@@ -1,6 +1,6 @@
 import { ModeToggle } from "@/components/ToggleMode";
 import Link from "next/link";
-import Logo from "./Logo";
+import { Logo } from "./Logo";
 
 const links = [
   { href: "/", label: "Overview" },

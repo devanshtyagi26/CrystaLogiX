@@ -1,10 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { Check, Laptop, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,14 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ModeToggle() {
-  const [mounted, setMounted] = React.useState(false);
   const { setTheme, theme } = useTheme();
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const currentTheme = mounted ? theme : "system";
+  const currentTheme = theme ?? "system";
 
   const options = [
     { value: "light", label: "Light", icon: Sun },

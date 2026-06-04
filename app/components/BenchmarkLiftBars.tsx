@@ -2,14 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { benchmarkLift } from "../data/research";
-
-type HoverCard = {
-  model: string;
-  note: string;
-  improvement: number;
-  x: number;
-  y: number;
-};
+import { HoverCard } from "@/lib/types";
 
 function BenchmarkLiftBars() {
   const chartRef = useRef<HTMLDivElement | null>(null);
