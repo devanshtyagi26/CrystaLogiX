@@ -1,42 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  predictBandgap,
-  validateFeatures,
-  N_FEATURES,
-  CLASSIFIER_FEATURES,
-} from "@/lib/onnxInference";
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
-const MAX_BODY_BYTES = 64 * 1024; // 64 KB — features array should never exceed this
+const MAX_BODY_BYTES = 64 * 1024;
+const INFERENCE_URL  = process.env.INFERENCE_API_URL;
+const API_SECRET_KEY = process.env.INFERENCE_API_SECRET;
 
 function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
-}
-
-// ── API key auth ──────────────────────────────────────────────────────────────
-
-const VALID_API_KEY = process.env.INFERENCE_API_SECRET;
-
-function checkApiKey(req: NextRequest): NextResponse | null {
-  if (!VALID_API_KEY) {
-    // Fail closed: if the env var is missing, block all requests
-    console.error("[/api/predict] INFERENCE_API_SECRET env var is not set.");
-    return NextResponse.json(
-      { error: "Service misconfigured." },
-      { status: 503 },
-    );
-  }
-
-  const provided = req.headers.get("x-api-key");
-  if (!provided || provided !== VALID_API_KEY) {
-    return NextResponse.json(
-      { error: "Missing or invalid API key." },
-      { status: 401 },
-    );
-  }
-
-  return null; // key is valid
 }
 
 // ── Block non-POST verbs ──────────────────────────────────────────────────────
@@ -49,9 +20,11 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
 
-  // ── API key auth ─────────────────────────────────────────────────────────
-  const authError = checkApiKey(req);
-  if (authError) return authError;
+  // ── Env guard — fail closed if misconfigured ─────────────────────────────
+  if (!INFERENCE_URL || !API_SECRET_KEY) {
+    console.error("[/api/predict] INFERENCE_SERVER_URL or API_SECRET_KEY is not set.");
+    return NextResponse.json({ error: "Service misconfigured." }, { status: 503 });
+  }
 
   // ── Content-Type guard ───────────────────────────────────────────────────
   const contentType = req.headers.get("content-type") ?? "";
@@ -79,12 +52,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
   }
 
-  // ── Safe shape check before casting ─────────────────────────────────────
-  if (
-    body === null ||
-    typeof body !== "object" ||
-    Array.isArray(body)
-  ) {
+  // ── Shape check ──────────────────────────────────────────────────────────
+  if (body === null || typeof body !== "object" || Array.isArray(body)) {
     return NextResponse.json(
       { error: "Body must be a JSON object with a `features` key." },
       { status: 400 },
@@ -93,44 +62,48 @@ export async function POST(req: NextRequest) {
 
   const { features } = body as Record<string, unknown>;
 
-  // ── Validate features ────────────────────────────────────────────────────
-  try {
-    validateFeatures(features);
-  } catch (err) {
+  if (!Array.isArray(features) || features.length === 0) {
     return NextResponse.json(
-      {
-        error:                  errorMessage(err),
-        expected_feature_count: N_FEATURES,
-        sample_feature_names:   CLASSIFIER_FEATURES.slice(0, 5),
-      },
+      { error: "`features` must be a non-empty array of numbers." },
       { status: 400 },
     );
   }
 
-  // ── Inference ────────────────────────────────────────────────────────────
-  try {
-    const result = await predictBandgap(features as number[]);
-
-    return NextResponse.json({
-      success: true,
-      stage1: {
-        is_metal:       result.isMetal,
-        class_label:    result.classLabel,
-        prob_metal:     +result.probMetal.toFixed(6),
-        prob_non_metal: +result.probNonMetal.toFixed(6),
-      },
-      stage2: {
-        bandgap_ev:       result.bandgapEv !== null
-                            ? +result.bandgapEv.toFixed(4)
-                            : null,
-        bandgap_category: result.bandgapCategory,
-      },
-    });
-  } catch (err) {
-    console.error("[/api/predict] inference error:", err);
+  if (!features.every((f) => typeof f === "number" && isFinite(f))) {
     return NextResponse.json(
-      { error: "Inference failed.", details: errorMessage(err) },
-      { status: 500 },
+      { error: "`features` must contain only finite numbers." },
+      { status: 400 },
+    );
+  }
+
+  // ── Proxy to FastAPI — API key added server-side, never touches browser ──
+  try {
+    const upstream = await fetch(`${INFERENCE_URL}/api/predict`, {
+      method:  "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key":    API_SECRET_KEY,          // server → server only
+      },
+      body: JSON.stringify({ features }),
+    });
+
+    const data = await upstream.json();
+
+    if (!upstream.ok) {
+      // Forward FastAPI's error status + message transparently
+      return NextResponse.json(
+        { error: data?.detail ?? "Upstream inference error." },
+        { status: upstream.status },
+      );
+    }
+
+    return NextResponse.json({ success: true, ...data });
+
+  } catch (err) {
+    console.error("[/api/predict] upstream fetch failed:", err);
+    return NextResponse.json(
+      { error: "Could not reach inference server.", details: errorMessage(err) },
+      { status: 502 },
     );
   }
 }

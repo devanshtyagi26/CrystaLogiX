@@ -14,6 +14,7 @@ import {
 } from "@/lib/types";
 import ResultCard from "./sim/ResultCard";
 import LabelInfo from "./sim/LabelInfo";
+import { getPrediction } from "@/actions/predict";
 
 function resultFromResponse(
   response: PredictMaterialResponse,
@@ -163,20 +164,7 @@ export default function BandgapPredictor(): ReactElement {
       const { features } = labelData as { features: number[] };
 
       // Step 2: send features to predict
-      const predictRes = await fetch("/api/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.INFERENCE_API_SECRET || "",
-        },
-        body: JSON.stringify({ features }),
-      });
-
-      const predictData = await predictRes.json();
-      if (!predictRes.ok) {
-        throw new Error(predictData.error ?? "Prediction failed.");
-      }
-
+      const predictData = await getPrediction(features);
       const typed = predictData as PredictMaterialResponse;
       setResult(resultFromResponse(typed));
     } catch (requestError) {
