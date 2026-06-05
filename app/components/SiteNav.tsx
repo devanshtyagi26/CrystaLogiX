@@ -1,6 +1,7 @@
 import { MobileNav } from "./mobile-nav";
 import { DesktopNav } from "./desktop-nav";
 import { Logo } from "./Logo";
+import { ModeToggle } from "@/components/ToggleMode";
 
 const links = [
   { href: "/", label: "Overview" },
@@ -17,9 +18,12 @@ export function SiteNav() {
         <a href="/" className="flex items-center gap-2 font-semibold">
           <Logo />
         </a>
+        <div className="flex items-center gap-4 mr-2 lg:gap-6 lg:mr-6">
+          <ModeToggle />
 
-        <DesktopNav links={links} />
-        <MobileNav links={links} />
+          <DesktopNav links={links} />
+          <MobileNav links={links} />
+        </div>
       </div>
     </header>
   );

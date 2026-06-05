@@ -180,8 +180,8 @@ export default function BandgapPredictor(): ReactElement {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="absolute right-10 lg:top-25 top-29 flex items-center gap-5">
+    <div className="min-h-screen lg:py-1 py-10">
+      <div className="absolute lg:right-10 right-[10%] lg:top-25 top-22 flex items-center gap-5">
         <div className="flex items-center gap-2 text-xs">
           <GlowDot active={active} />
           <span
