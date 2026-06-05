@@ -19,14 +19,14 @@ export interface PredictionResult {
 // ── Action ────────────────────────────────────────────────────────────────────
 
 export async function getPrediction(features: number[]): Promise<PredictionResult> {
-  // Basic client-side guard before hitting the network
   if (!Array.isArray(features) || features.length === 0) {
     throw new Error("features must be a non-empty array.");
   }
 
-  // Internal call — same origin, no API key needed here
-  // The route handler adds the key server-side before forwarding to FastAPI
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/predict`, {
+  // Derive base URL from env — with a localhost fallback for local dev
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");    
+
+  const res = await fetch(`${baseUrl}/api/predict`, {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
     body:    JSON.stringify({ features }),
@@ -34,10 +34,6 @@ export async function getPrediction(features: number[]): Promise<PredictionResul
   });
 
   const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data?.error ?? "Prediction failed.");
-  }
-
+  if (!res.ok) throw new Error(data?.error ?? "Prediction failed.");
   return data as PredictionResult;
 }
