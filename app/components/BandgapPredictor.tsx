@@ -242,7 +242,7 @@ export default function BandgapPredictor(): ReactElement {
                     <span
                       className={`text-[#64748b] transition ${open ? "rotate-180" : ""}`}
                     >
-                      v
+                      &#9660;
                     </span>
                   </button>
 

@@ -32,10 +32,9 @@ function ResultCard({
   material: Material;
 }) {
   const cat = CAT_CONFIG[result.bandgapCategory];
-  const error =
-    result.bandgapEv !== null
-      ? Math.abs(result.bandgapEv - material.actual)
-      : null;
+  const error = Math.abs(
+    (result.bandgapEv ? result.bandgapEv : 0) - material.actual,
+  );
 
   return (
     <div className="animate-[result-rise_420ms_cubic-bezier(0.16,1,0.3,1)]">
@@ -63,11 +62,9 @@ function ResultCard({
             </div>
             <div className="flex items-baseline gap-2">
               <span className="font-mono text-4xl font-bold leading-none text-[#f1f5f9]">
-                {result.isMetal
-                  ? "-"
-                  : result.bandgapEv !== null
-                    ? result.bandgapEv.toFixed(3)
-                    : "-"}
+                {result.bandgapEv !== null
+                  ? result.bandgapEv.toFixed(3)
+                  : "0.000"}
               </span>
               {!result.isMetal ? (
                 <span className="text-base text-[#64748b]">eV</span>
@@ -80,16 +77,15 @@ function ResultCard({
 
           <div className="text-right">
             <div className="font-mono text-2xl font-semibold text-[#94a3b8]">
-              {material.actual === 0 ? "-" : material.actual.toFixed(3)}
+              {material.actual.toFixed(3)}
             </div>
             <div className="mt-1 text-xs uppercase tracking-[0.12em] text-[#475569]">
               Actual DFT
             </div>
-            {error !== null ? (
-              <div className="mt-2 font-mono text-xs text-[#f59e0b]">
-                Delta {error.toFixed(3)} eV
-              </div>
-            ) : null}
+
+            <div className="mt-2 font-mono text-xs text-[#f59e0b]">
+              Delta {error.toFixed(3)} eV
+            </div>
           </div>
         </div>
 
