@@ -60,11 +60,11 @@ export default function Home() {
             </div>
           </div>
 
-          <Panel className="relative min-h-115 overflow-hidden shadow-2xl shadow-black/40 lg:min-h-157.5">
+          <Panel className="flex flex-col relative p-4 lg:py-0 overflow-hidden shadow-2xl shadow-black/40 lg:min-h-157.5">
             <div className="absolute inset-0 z-0">
               <MotionAnimation />
             </div>
-            <div className="absolute inset-x-4 bottom-4 z-10 grid gap-3 sm:grid-cols-2">
+            <div className="lg:inset-x-4 lg:absolute lg:bottom-4 z-10 grid gap-3 sm:grid-cols-2">
               <div className="rounded-md border border-teal/20 bg-background/80 p-4 backdrop-blur-lg">
                 <p className="text-xs uppercase tracking-[0.2em] text-teal">
                   Stage One

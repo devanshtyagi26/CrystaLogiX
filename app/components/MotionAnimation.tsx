@@ -37,6 +37,7 @@ const thoughtDots = [
 ];
 
 function MotionAnimation() {
+  if (typeof window !== "undefined" && window.innerWidth < 640) return null;
   return (
     <div
       aria-hidden="true"
