@@ -32,7 +32,7 @@ export default function Home() {
       <section className="relative border-b border-line/10">
         <div className="relative mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center gap-10 px-5 py-4 sm:px-8 lg:grid-cols-[0.93fr_1.07fr] lg:px-10">
           <div>
-            <p className="inline-flex rounded-full border border-teal/30 bg-teal/10 px-4 py-2 text-xs uppercase tracking-[0.22em] text-teal">
+            <p className="inline-flex rounded-full border border-teal/30 bg-teal/10 px-4 py-2 uppercase tracking-[0.22em] text-teal text-[0.55rem] lg:text-xs">
               GPU-accelerated materials informatics
             </p>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.96] text-warm sm:text-7xl">

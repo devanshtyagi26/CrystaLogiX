@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 
 const routes = [
@@ -12,7 +13,7 @@ const connections = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/tyagi-devansh" },
   { label: "Email", href: "mailto:tyagidevansh3@gmail.com" },
   { label: "Portfolio", href: "https://abc.com" },
-  { label: "Research Profile", href: "https://aa.rr" },
+  // { label: "Research Profile", href: "https://aa.rr" },
 ];
 
 export function SiteFooter() {
