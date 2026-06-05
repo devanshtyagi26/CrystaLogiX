@@ -267,7 +267,7 @@ export default function BandgapPredictor(): ReactElement {
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                         placeholder="Search by id or formula..."
-                        className="mb-2 w-full rounded-lg border border-white/8 bg-white/[0.03] px-3 py-2 text-sm text-[#e2e8f0] outline-none transition placeholder:text-[#64748b] focus:border-[#06d6a0]/45"
+                        className="mb-2 w-full rounded-lg border border-white/8 bg-white/3 px-3 py-2 text-sm text-[#e2e8f0] outline-none transition placeholder:text-[#64748b] focus:border-[#06d6a0]/45"
                       />
                       <div className="max-h-72 overflow-y-auto pr-1">
                         {searching ? (

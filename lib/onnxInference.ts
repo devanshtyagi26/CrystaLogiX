@@ -25,7 +25,7 @@ export function validateFeatures(features: unknown): asserts features is number[
 const INFERENCE_URL = process.env.INFERENCE_API_URL!;
 
 export async function predictBandgap(features: number[]): Promise<BandgapPrediction> {
-  const res = await fetch(`${INFERENCE_URL}/predict`, {
+  const res = await fetch(`${INFERENCE_URL}/api/predict`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ features }),

@@ -16,7 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full scroll-smooth antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="h-full scroll-smooth antialiased"
+      suppressHydrationWarning
+    >
       <body
         suppressHydrationWarning
         className="relative min-h-full overflow-x-hidden bg-background text-foreground"
@@ -24,7 +28,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div
             aria-hidden="true"
-            className="pointer-events-none fixed inset-0 z-0 opacity-45 [background-size:72px_72px] dark:opacity-35"
+            className="pointer-events-none fixed inset-0 z-0 opacity-45 bg-size-[72px_72px] dark:opacity-35"
             style={{
               backgroundImage:
                 "linear-gradient(rgb(var(--app-accent-cyan) / 0.11) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--app-accent-cyan) / 0.11) 1px, transparent 1px)",
