@@ -32,9 +32,7 @@ function ResultCard({
   material: Material;
 }) {
   const cat = CAT_CONFIG[result.bandgapCategory];
-  const error = Math.abs(
-    (result.bandgapEv ? result.bandgapEv : 0) - material.actual,
-  );
+  const error = Math.abs((result.bandgapEv || 0) - material.actual);
 
   return (
     <div className="animate-[result-rise_420ms_cubic-bezier(0.16,1,0.3,1)]">

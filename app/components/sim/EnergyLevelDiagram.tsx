@@ -94,6 +94,7 @@ function EnergyLevelDiagram({
             y={(valenceY + conductionY) / 2 + 4}
             fill="#94a3b8"
             fontSize="10"
+            fontFamily="monospace"
           >
             {(bandgap || 0).toFixed(2)} eV
           </text>

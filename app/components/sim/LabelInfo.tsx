@@ -3,16 +3,18 @@ import { Material, InferenceResult } from "@/lib/types";
 function LabelInfo({
   material,
   result,
+  time,
 }: {
   material: Material;
   result: InferenceResult;
+  time: string;
 }) {
   return (
     <div className="grid grid-cols-3 gap-3 rounded-xl border border-white/5 bg-[#071515]/50 p-4">
       {[
         { label: "Material ID", value: material.id },
         { label: "Stage", value: result.isMetal ? "1 only" : "1 to 2" },
-        { label: "Labels", value: "server-side" },
+        { label: "Time Taken", value: time },
       ].map(({ label, value }) => (
         <div key={label}>
           <div className="mb-1 text-[10px] uppercase tracking-widest text-[#475569]">

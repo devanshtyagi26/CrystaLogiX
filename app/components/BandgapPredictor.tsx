@@ -47,6 +47,19 @@ function EmptyState() {
   );
 }
 
+let startTime: number;
+let timeTakenStr: string;
+function timeTaken(start: number, end: number) {
+  const seconds = (end - start) / 1000;
+  if (seconds < 60) {
+    return `${seconds.toFixed(1)}s`;
+  } else {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = (seconds % 60).toFixed(0);
+    return `${minutes}m ${remainingSeconds}s`;
+  }
+}
+
 export default function BandgapPredictor(): ReactElement {
   const [serverState, setServerState] = useState<ServerState>("connecting");
   const [materials, setMaterials] = useState<Material[]>([]);
@@ -126,6 +139,7 @@ export default function BandgapPredictor(): ReactElement {
   }, []);
 
   async function handleSelect(material: Material) {
+    startTime = Date.now();
     setSelected(material);
     setOpen(false);
     setSearch("");
@@ -169,6 +183,7 @@ export default function BandgapPredictor(): ReactElement {
           : "Prediction failed.",
       );
     } finally {
+      timeTakenStr = timeTaken(startTime, Date.now());
       setLoading(false);
     }
   }
@@ -342,7 +357,11 @@ export default function BandgapPredictor(): ReactElement {
               </div>
 
               {!loading && result && selected && (
-                <LabelInfo material={selected} result={result} />
+                <LabelInfo
+                  material={selected}
+                  result={result}
+                  time={timeTakenStr}
+                />
               )}
 
               {error ? (
