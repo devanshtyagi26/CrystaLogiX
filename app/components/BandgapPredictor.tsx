@@ -165,7 +165,10 @@ export default function BandgapPredictor(): ReactElement {
       // Step 2: send features to predict
       const predictRes = await fetch("/api/predict", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.INFERENCE_API_SECRET || "",
+        },
         body: JSON.stringify({ features }),
       });
 
