@@ -12,7 +12,7 @@ const connections = [
   { label: "GitHub", href: "https://www.github.com/devanshtyagi26" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/tyagi-devansh" },
   { label: "Email", href: "mailto:tyagidevansh3@gmail.com" },
-  { label: "Portfolio", href: "https://abc.com" },
+  { label: "Portfolio", href: "https://devanshportfolio-hazel.vercel.app/" },
   // { label: "Research Profile", href: "https://aa.rr" },
 ];
 
