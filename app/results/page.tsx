@@ -2,8 +2,10 @@
 import BenchmarkLiftBars from "../components/BenchmarkLiftBars";
 import { MetricTile, PageHeader, Panel, Section } from "../components/Section";
 import {
+  benchmarkHighlights,
   conformalResults,
   errorInsights,
+  keyContributions,
   limitations,
   resultMetrics,
 } from "../data/research";
@@ -34,8 +36,8 @@ export default function ResultsPage() {
               Conformal prediction for Stage two regression
             </p>
             <h2 className="mt-4 text-3xl font-semibold text-warm">
-              Stage 2 Prediction intervals are calibrated in log space, then
-              returned to eV.
+              Stage 2 predictions are accompanied by calibrated uncertainty
+              intervals, enabling risk-aware materials screening.
             </h2>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               {conformalResults.map((item) => (
@@ -53,12 +55,22 @@ export default function ResultsPage() {
                 </div>
               ))}
             </div>
+            <div className="mt-8 gap-4">
+              {benchmarkHighlights.map((item) => (
+                <p
+                  key={item}
+                  className="text-sm leading-7 text-muted-subtle before:mr-2 before:inline-block before:h-1 before:w-1 before:rounded-full before:bg-gold"
+                >
+                  {item}
+                </p>
+              ))}
+            </div>
           </Panel>
 
           <div id="benchmark-lift-section">
             <Panel className="p-6">
               <p className="text-xs uppercase tracking-[0.24em] text-gold">
-                BENCHMARKING VS GRAPH NEURAL NETWORKS BASELINES
+                BENCHMARKING AGAINST STATE-OF-THE-ART BANDGAP PREDICTORS
               </p>
               <BenchmarkLiftBars />
             </Panel>
@@ -72,7 +84,7 @@ export default function ResultsPage() {
             GLOBAL PERFORMANCE VALIDATION
           </p>
           <h2 className="mt-4 text-3xl font-semibold leading-tight text-warm sm:text-4xl">
-            Evaluating Residual Distributions & Pipeline Accuracy.
+            End-to-End Validation Across 200,487 Materials.
           </h2>
         </div>
         <Panel className="p-6 flex gap-10 justify-around items-start">
@@ -96,34 +108,35 @@ export default function ResultsPage() {
               The Parity Analysis
             </h3>
             <p className="leading-7 text-muted-soft">
-              This parity plot maps the predicted electronic bandgaps against
-              the true DFT-ground truth values across the entire withheld
-              validation corpus.
+              This parity plot compares predicted and reference bandgap values
+              across the complete holdout test set. Concentration around the
+              ideal y = x line demonstrates that the hurdle-learning framework
+              successfully models both metallic and semiconducting materials
+              within a unified prediction pipeline.
             </p>
 
             <ul className="mt-4 list-disc space-y-2 pl-5 text-muted-subtle">
               <li>
-                <b className="font-semibold text-warm">Zero-Spike Handling:</b>{" "}
-                Notice the high density of accurately mapped points anchoring
-                the origin at <i>(0,0)</i>. This visually demonstrates the
-                success of the Stage 1 XGBoost classifier gate in perfectly
-                routing metallic phases out of the pipeline.
+                <b className="font-semibold text-warm">
+                  Zero-Inflation Management:
+                </b>{" "}
+                The dense concentration of points near the origin highlights the
+                model's ability to handle the large metallic population (Eg = 0
+                eV), a major challenge for conventional regression approaches.
               </li>
               <li>
                 <b className="font-semibold text-warm">
-                  High-Density Convergence:
+                  Strong Agreement Across Common Materials:
                 </b>{" "}
-                The majority of semiconductor entries tightly cluster within the
-                shaded &plusmn;0.5eV calibration band along the perfect
-                prediction line <i>y = x</i>.
+                Most samples cluster tightly around the ideal prediction line,
+                contributing to the overall MAE of 0.2447 eV and R² of 0.8879
+                across the complete dataset.
               </li>
               <li>
-                <b className="font-semibold text-warm">
-                  Variance at Higher Gaps:
-                </b>{" "}
-                The minor dispersion seen above 6.0eV represents wide-bandgap
-                insulators, an expected behavior given the extreme scarcity of
-                high-energy insulator samples in open crystal structures.
+                <b className="font-semibold text-warm">Wide-Gap Challenges:</b>{" "}
+                The largest residuals occur in sparsely represented high-bandgap
+                insulators, where training examples become increasingly rare
+                despite bias-correction procedures.{" "}
               </li>
             </ul>
           </div>
@@ -137,12 +150,32 @@ export default function ResultsPage() {
               Error anatomy
             </p>
             <h2 className="mt-4 text-3xl font-semibold text-warm">
-              The biggest remaining risk is not random; it is routed and
-              energy-dependent.
+              Remaining errors are concentrated in physically challenging
+              regions of the bandgap spectrum.
             </h2>
           </div>
           <div className="grid gap-4">
             {errorInsights.map((item) => (
+              <Panel key={item} className="p-5">
+                <p className="text-sm leading-7 text-body">{item}</p>
+              </Panel>
+            ))}
+          </div>
+        </div>
+      </Section>
+      <Section className="border-b border-line/10">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-teal">
+              Key Contribution
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold text-warm">
+              Why hurdle learning?
+            </h2>
+          </div>
+
+          <div className="grid gap-4">
+            {keyContributions.map((item) => (
               <Panel key={item} className="p-5">
                 <p className="text-sm leading-7 text-body">{item}</p>
               </Panel>
@@ -158,7 +191,8 @@ export default function ResultsPage() {
               Limits
             </p>
             <h2 className="mt-4 text-3xl font-semibold text-warm">
-              The model is practical, but its validity boundary is explicit.
+              Performance gains are substantial, but important scientific
+              limitations remain.
             </h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2">

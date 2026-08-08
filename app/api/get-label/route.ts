@@ -4,6 +4,16 @@ import { CLASSIFIER_FEATURES } from "@/lib/onnxInference";
 
 export const runtime = "nodejs";
 
+/**
+ * Handles POST requests to retrieve and return classifier features for a label by id.
+ * Validates the request body, ensures the label exists, and responds with extracted features or an error.
+ *
+ * Args:
+ *   req: The incoming Next.js request containing a JSON body with a string `id` field.
+ *
+ * Returns:
+ *   A JSON response containing either an error description or the extracted feature vector for the label.
+ */
 export async function POST(req: NextRequest) {
   let body: unknown;
   try {
@@ -20,7 +30,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const cleanId = id.trim(); // ← use trimmed id consistently
+  const cleanId = id.trim();
 
   const db = await getDb();
   const record = await db.collection("labels").findOne({ _id: cleanId as any });

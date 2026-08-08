@@ -1,27 +1,48 @@
 import { Fragment, createElement } from "react";
 
-const egSymbol = createElement(Fragment, null, "E", createElement("sub", null, "g"));
-const rSquaredSymbol = createElement(Fragment, null, "R", createElement("sup", null, "2"));
+const egSymbol = createElement(
+  Fragment,
+  null,
+  "E",
+  createElement("sub", null, "g"),
+);
+const rSquaredSymbol = createElement(
+  Fragment,
+  null,
+  "R",
+  createElement("sup", null, "2"),
+);
 
 export const headlineMetrics = [
-  { value: "200,487", label: "Crystals Analyzed" },
-  { value: "87", label: "Selected Features" },
-  { value: "0.2336eV", label: "Global MAE" },
-  { value: "0.8945", label: createElement(Fragment, null, "End-to-end ", rSquaredSymbol) },
+  { value: "200,487", label: "Materials Analyzed" },
+  { value: "86", label: "Selected Features" },
+  { value: "0.2447 eV", label: "Global MAE" },
+  {
+    value: "0.8879",
+    label: createElement(Fragment, null, "End-to-end ", rSquaredSymbol),
+  },
 ];
 
 export const datasetFacts = [
-  { label: "Metallic share", value: "52.2%", detail: createElement(Fragment, null, egSymbol, " = 0eV ENTRIES") },
+  {
+    label: "Metallic share",
+    value: "52.2%",
+    detail: createElement(Fragment, null, egSymbol, " = 0eV ENTRIES"),
+  },
   { label: "Nonmetal subset", value: "95,920", detail: "SENT TO STAGE 2" },
-  { label: "Train / Calibration / Test", value: "72% / 8% / 20%", detail: "PROPORTIONAL PHASE SPLIT" },
+  {
+    label: "Train / Calibration / Test",
+    value: "72% / 8% / 20%",
+    detail: "PROPORTIONAL PHASE SPLIT",
+  },
   { label: "Holdout test", value: "40,098", detail: "WITHHELD MATERIALS" },
 ];
 
 export const featurePipeline = [
   "Materials Project API records provide composition, crystal structure, and DFT-PBE bandgap labels.",
   "GPU chunk-wise featurization expands each material into 145 Magpie-style compositional descriptors.",
-  "Variance, collinearity, and intra-group filtering compress the matrix to 87 high-signal descriptors.",
-  "Target encoding and scaling are fit only on training data to avoid leakage into calibration or test splits.",
+  "Variance, correlation, and domain-aware filtering compress the feature matrix to 86 high-signal descriptors.",
+  "Target encoding and scaling are fit exclusively on training data to prevent leakage into calibration and test sets.",
 ];
 
 export const pipelineStages = [
@@ -35,7 +56,7 @@ export const pipelineStages = [
     step: "02",
     title: "Classifier hurdle",
     eyebrow: "XGBoost gate",
-    body: "A tuned binary classifier separates metals from nonmetals. Lowering the decision threshold to 0.28 prioritizes nonmetal recall, reducing false negatives from 976 to 411.",
+    body: "A tuned binary classifier separates metals from nonmetals. A 0.30 operating threshold prioritizes nonmetal recall (96.73%), reducing the risk of discarding promising semiconductor candidates.",
   },
   {
     step: "03",
@@ -44,72 +65,110 @@ export const pipelineStages = [
     body: createElement(
       Fragment,
       null,
-      "Only positive-bandgap entries are passed to an Optuna-tuned XGBoost ensemble trained on log(1 + ",
+      "Only positive-bandgap materials are routed to an Optuna-tuned five-member XGBoost ensemble trained on log(1 + ",
       egSymbol,
-      "), isolating the continuous prediction problem from the zero spike."
+      "), transforming a highly skewed regression problem into a stable prediction task.",
     ),
   },
   {
     step: "04",
     title: "Bias and uncertainty layer",
-    eyebrow: "Conformal PI",
-    body: "Bin-wise correction reduces high-energy tail bias, while split conformal prediction converts residuals into calibrated 90% and 95% prediction intervals.",
+    eyebrow: "Conformal prediction",
+    body: "Bin-wise bias correction mitigates systematic underestimation in wide-gap materials, while split conformal prediction generates calibrated 90% and 95% prediction intervals.",
   },
 ];
 
 export const resultMetrics = [
-  { label: "Stage 1 ROC-AUC", value: "0.9843", detail: "PHASE GATE DISCRIMINATION" },
-  { label: "Nonmetal recall", value: "97.86%", detail: "OPTIMIZED FOR RECALL" },
-  { label: "Stage 2 MAE", value: "0.3758 eV", detail: "BIN-CORRECTED NONMETALS" },
-  { label: createElement(Fragment, null, "Stage 2 ", rSquaredSymbol), value: "0.8734", detail: "POSITIVE-GAP SUBSET" },
-  { label: "Global MAE", value: "0.2336 eV", detail: "ALL METAL CLASSES" },
-  { label: createElement(Fragment, null, "Global ", rSquaredSymbol), value: "0.8945", detail: "END-TO-END PIPELINE" },
+  {
+    label: "Stage 1 Accuracy",
+    value: "91.29%",
+    detail: "METAL / NONMETAL CLASSIFICATION",
+  },
+  {
+    label: "Stage 1 ROC-AUC",
+    value: "0.9774",
+    detail: "CLASSIFIER DISCRIMINATION",
+  },
+  { label: "Nonmetal Recall", value: "96.73%", detail: "THRESHOLD = 0.30" },
+  { label: "Global MAE", value: "0.2447 eV", detail: "ALL MATERIAL CLASSES" },
+  { label: "Global MedAE", value: "0.0455 eV", detail: "ROBUST ERROR MEASURE" },
+  {
+    label: createElement(Fragment, null, "Global ", rSquaredSymbol),
+    value: "0.8879",
+    detail: "END-TO-END PIPELINE",
+  },
 ];
 
 export const conformalResults = [
-  { label: "PI90 coverage", value: "90.56%", width: "2.17 eV mean width" },
-  { label: "PI95 coverage", value: "95.09%", width: "2.87 eV mean width" },
-  { label: "Calibration set", value: "16,039", width: "unused in model training" },
+  { label: "PI90 coverage", value: "90.29%", width: "Target 90%" },
+  { label: "PI95 coverage", value: "95.06%", width: "Target 95%" },
+  {
+    label: "Calibration set",
+    value: "16,039",
+    width: "unused in model training",
+  },
 ];
 
 export const benchmarkLift = [
   {
     model: "DFT-PBE",
-    improvement: 76.64,
-    mae: 1.0000,
-    note: "Raw calculated values having averaege MAE of 1.0000eV across the test set.",
-  },
-  {
-    model: "CGCNN",
-    improvement: 39.8,
-    mae: 0.3880,
-    note: "Values calculated using the CGCNN model have an average MAE of 0.3880eV.",
-  },
-  {
-    model: "MEGNet",
-    improvement: 29.2,
-    mae: 0.3299,
-    note: "Values calculated using the MEGNet model have an average MAE of 0.3299eV.",
+    improvement: 59.2,
+    mae: 0.6,
+    note: "Raw DFT-PBE calculations typically exhibit MAE values between 0.60 and 1.00 eV due to systematic bandgap underestimation.",
   },
   {
     model: "GATGNN",
-    improvement: 27.5,
-    mae: 0.3222,
-    note: "Values calculated using the GATGNN model have an average MAE of 0.3222eV.",
+    improvement: 24.0,
+    mae: 0.322,
+    note: "Graph Attention-based GNN for crystal bandgap prediction.",
+  },
+  {
+    model: "CGCNN",
+    improvement: 36.9,
+    mae: 0.388,
+    note: "Crystal Graph Convolutional Neural Network baseline.",
+  },
+  {
+    model: "MEGNet",
+    improvement: 25.9,
+    mae: 0.33,
+    note: "Materials Graph Network benchmark model.",
+  },
+  {
+    model: "EMGen",
+    improvement: 30.7,
+    mae: 0.353,
+    note: "Element-Learning model for bandgap prediction.",
   },
   {
     model: "CrystaLogiX",
     improvement: 0,
-    mae: 0.2336,
-    note: "End-to-end MAE across all material classes using the CrystaLogiX pipeline have MAE of 0.2336eV.",
+    mae: 0.2447,
+    note: "Proposed hurdle-learning framework with ensemble regression and conformal uncertainty quantification.",
   },
 ];
 
+export const benchmarkHighlights = [
+  "36.9% lower MAE than CGCNN",
+  "25.9% lower MAE than MEGNet",
+  "24.0% lower MAE than GATGNN",
+  "30.7% lower MAE than EMGen",
+  "Only method in the comparison providing calibrated uncertainty quantification",
+];
+
 export const errorInsights = [
-  "Correctly routed samples achieved an MAE of 0.1910 eV, while misrouted samples rose to 0.7595 eV.",
-  "Narrow-gap materials in the 0-1 eV range were overestimated by roughly +0.222 eV.",
-  "Wide-gap materials above 5 eV were underestimated by roughly -0.420 eV.",
-  "The remaining PI90 coverage shortfall is attributable to Stage 1 gate errors rather than the conformal regressor alone.",
+  "Most prediction error originates from difficult boundary cases near the metal–nonmetal transition region.",
+  "Materials with bandgaps below 1 eV remain challenging due to overlap between metallic and semiconducting behaviour.",
+  "Wide-gap insulators above 5 eV exhibit mild underestimation despite bin-wise bias correction.",
+  "Conformal prediction intervals remain well calibrated, achieving near-target empirical coverage at both 90% and 95% confidence levels.",
+];
+
+export const keyContributions = [
+  "52.2% of the Materials Project dataset consists of metallic materials with Eg = 0 eV.",
+  "Traditional regression models struggle with this highly zero-inflated distribution.",
+  "The hurdle framework first classifies materials as metal or nonmetal.",
+  "Bandgap regression is then performed only on nonmetallic materials.",
+  "This decomposition enables state-of-the-art accuracy while preserving computational efficiency.",
 ];
 
 export const limitations = [
@@ -131,53 +190,5 @@ export const applications = [
   {
     title: "Risk-aware R&D screening",
     body: "Use conformal interval width as a decision variable, ranking candidates by both predicted Eg and confidence.",
-  },
-];
-
-export const sampleMaterials = [
-  {
-    formula: "Si",
-    family: "elemental semiconductor",
-    metallicProbability: 0.18,
-    prediction: 1.12,
-    interval90: 0.34,
-    interval95: 0.48,
-    descriptorSignal: 64,
-  },
-  {
-    formula: "Fe",
-    family: "transition metal",
-    metallicProbability: 0.91,
-    prediction: 0,
-    interval90: 0,
-    interval95: 0,
-    descriptorSignal: 21,
-  },
-  {
-    formula: "ZnO",
-    family: "wide-gap oxide",
-    metallicProbability: 0.08,
-    prediction: 3.21,
-    interval90: 0.42,
-    interval95: 0.57,
-    descriptorSignal: 83,
-  },
-  {
-    formula: "GaAs",
-    family: "III-V semiconductor",
-    metallicProbability: 0.13,
-    prediction: 1.43,
-    interval90: 0.29,
-    interval95: 0.41,
-    descriptorSignal: 72,
-  },
-  {
-    formula: "SrTiO3",
-    family: "perovskite oxide",
-    metallicProbability: 0.22,
-    prediction: 3.04,
-    interval90: 0.58,
-    interval95: 0.76,
-    descriptorSignal: 78,
   },
 ];

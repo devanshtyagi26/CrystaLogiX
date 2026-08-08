@@ -44,9 +44,11 @@ export default function FrameworkPage() {
             <p className="mt-5 text-sm leading-7 text-muted">
               The notebook begins with Materials Project entries and uses
               compositional statistics as a portable representation of atomic,
-              compositional, and structural information. The final 87-feature
-              matrix is designed for fast training, repeatable scaling, and
-              leakage-safe validation.
+              compositional, and structural information. The final 86-feature
+              matrix is designed to retain chemically meaningful information
+              while remaining computationally efficient. The resulting
+              representation supports rapid training, reproducible evaluation,
+              and leakage-safe validation across more than 200,000 materials.
             </p>
           </div>
           <Panel className="p-6">
@@ -77,11 +79,11 @@ export default function FrameworkPage() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-muted">
-            The diagram illustrates data ingestion from Materials Project
-            records, GPU-resident featurization, a stage-one classifier that
-            routes metals and nonmetals, followed by a stage-two ensemble
-            regressor and a conformal prediction layer producing calibrated
-            uncertainty intervals.
+            The pipeline addresses the highly zero-inflated bandgap distribution
+            by separating classification and regression tasks. Materials are
+            first classified as metallic or nonmetallic before nonmetallic
+            candidates are routed to an ensemble regressor and uncertainty
+            quantification layer.
           </p>
         </div>
         <Panel className="p-6">
@@ -145,10 +147,11 @@ export default function FrameworkPage() {
               <i>y</i> maps to 0 for metals, <i>y</i> maps to 1 for nonmetals
             </h2>
             <p className="mt-4 text-sm leading-7 text-muted">
-              The classifier assigns Eg = 0 eV directly when a material is
-              routed as metallic. This prevents the continuous regressor from
-              being trained against the dense zero spike and reduces
-              regression-toward-zero behavior.
+              The Stage 1 XGBoost classifier predicts whether a material belongs
+              to the metallic (Eg = 0 eV) or nonmetallic (Eg {">"} 0 eV) class.
+              This separation removes the dominant zero spike from the
+              regression task and enables specialized modelling of positive
+              bandgaps.
             </p>
           </Panel>
           <Panel className="p-6">
@@ -162,10 +165,11 @@ export default function FrameworkPage() {
               for positive bandgaps
             </h2>
             <p className="mt-4 text-sm leading-7 text-muted">
-              The positive-gap regressor works on a transformed target to
-              stabilize right-skewed errors, then maps predictions back to
-              electron volts for downstream screening and conformal prediction
-              intervals.
+              The Stage 2 ensemble regressor operates only on nonmetallic
+              materials using the transformed target log(1 + Eg). This reduces
+              target skewness, improves numerical stability, and enhances
+              prediction quality across a broad range of semiconductor and
+              insulating materials.
             </p>
           </Panel>
         </div>

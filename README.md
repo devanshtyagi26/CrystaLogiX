@@ -67,7 +67,7 @@ flowchart TD
 
 - End-to-end pipeline walkthrough: data curation → featurization → classification → regression → conformal calibration
 - Dataset statistics: metallic share, non-metal subset size, train/calibration/test splits
-- Feature engineering path: 145 Magpie compositional descriptors → 87 features after variance and collinearity filtering
+- Feature engineering path: 145 Magpie compositional descriptors → 86 features after variance and collinearity filtering
 
 ### Results Dashboard (`/results`)
 
@@ -172,7 +172,7 @@ Search materials by ID or formula. Returns paginated metadata. Public, no auth r
 
 ### `POST /api/get-label`
 
-Returns the ordered 87-element feature vector for a material. Rate limited (10 req/min per IP).
+Returns the ordered 86-element feature vector for a material. Rate limited (10 req/min per IP).
 
 **Response:**
 
@@ -180,7 +180,7 @@ Returns the ordered 87-element feature vector for a material. Rate limited (10 r
 {
   "success": true,
   "id": "mp-21727",
-  "feature_count": 87,
+  "feature_count": 86,
   "features": [4, 3.85, 6.431, 15, "..."]
 }
 ```
@@ -245,20 +245,20 @@ Probes the inference server. Used by the simulator's runtime status indicator. P
 
 ### Featurization
 
-- 145 Magpie-style compositional descriptors → variance + collinearity filtering → **87 features**
+- 145 Magpie-style compositional descriptors → variance + collinearity filtering → **86 features**
 - Target encoding and feature scaling fitted exclusively on training data
 
 ### Stage 1 — Classifier
 
 - XGBoost binary classifier
 - Decision threshold lowered to ~0.28 to maximize non-metal recall (ROC-AUC: 0.9843)
-- ONNX input node: `float_input`, shape `[1, 87]`
+- ONNX input node: `float_input`, shape `[1, 86]`
 
 ### Stage 2 — Regressor
 
 - 5-model XGBoost ensemble trained on `log(1 + Eg)`
 - Bin-wise bias correction layer to reduce high-energy tail bias
-- ONNX input node: `float_input`, shape `[1, 87]`
+- ONNX input node: `float_input`, shape `[1, 86]`
 
 ### Uncertainty — Conformal Prediction
 

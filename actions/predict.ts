@@ -18,6 +18,17 @@ export interface PredictionResult {
 
 // ── Action ────────────────────────────────────────────────────────────────────
 
+/**
+ * Requests a prediction from the backend using the provided feature vector. 
+ * Validates the input features and returns the structured prediction result or throws on failure.
+ *
+ * Args:
+ *   features: A non-empty array of numeric feature values to send to the prediction API.
+ *
+ * Returns:
+ *   A promise that resolves to the prediction result containing classification and bandgap information.
+ */
+
 export async function getPrediction(features: number[]): Promise<PredictionResult> {
   if (!Array.isArray(features) || features.length === 0) {
     throw new Error("features must be a non-empty array.");

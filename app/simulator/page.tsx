@@ -1,21 +1,24 @@
 import { Panel, Section } from "../components/Section";
 import BandgapPredictor from "../components/BandgapPredictor";
 
-const notes = [
+export const notes = [
   {
-    title: "Threshold",
-    body: "The dissertation lowered the classifier threshold to 0.28 to protect nonmetal recall during screening.",
+    title: "Hurdle Classification",
+    body: "The Stage 1 XGBoost classifier uses a 0.30 decision threshold to prioritize nonmetal recall (96.73%), reducing the chance of discarding promising semiconductor candidates.",
   },
   {
-    title: "Confidence",
-    body: "PI90 and PI95 represent split-conformal prediction intervals calibrated on held-out entries.",
+    title: "Uncertainty Quantification",
+    body: "PI90 and PI95 represent split-conformal prediction intervals generated from held-out calibration data, providing statistically calibrated confidence bounds alongside every prediction.",
   },
   {
-    title: "Risk tolerance",
-    body: "A practical acquisition score trades predicted Eg against interval width, mirroring uncertainty-aware screening.",
+    title: "Risk-Aware Screening",
+    body: "Candidate materials can be evaluated using both predicted bandgap and interval width, enabling uncertainty-aware prioritization for downstream computational or experimental validation.",
+  },
+  {
+    title: "Dataset Coverage",
+    body: "The model was trained and validated on 200,487 Materials Project entries spanning metals, semiconductors, and wide-gap insulators.",
   },
 ];
-
 export default function SimulatorPage() {
   return (
     <main>

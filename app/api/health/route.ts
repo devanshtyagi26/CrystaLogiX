@@ -6,7 +6,19 @@ if (INFERENCE_URL === "") {
   throw new Error("Missing INFERENCE_URL environment variable.");
 }
 
+
+/**
+ * Handles GET requests to report the health of the inference backend. 
+ * Contacts the inference server and returns an aggregated health status with details on failures or timeouts.
+ *
+ * Args:
+ *   None.
+ *
+ * Returns:
+ *   A JSON response describing the overall health status and any diagnostic information from the inference server.
+ */
 export async function GET() {
+
   try {
     const res = await fetch(INFERENCE_URL, {
       signal: AbortSignal.timeout(8000),
